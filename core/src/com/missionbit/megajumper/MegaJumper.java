@@ -2,6 +2,7 @@ package com.missionbit.megajumper;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -25,6 +26,7 @@ public class MegaJumper extends ApplicationAdapter {
     private BitmapFont font;
     private enum GameState {START, IN_GAME, GAME_OVER}
     private static GameState state;
+    private Music music;
 
     @Override
     public void create () {
@@ -42,6 +44,8 @@ public class MegaJumper extends ApplicationAdapter {
         gravity = new Vector2();
         font = new BitmapFont(Gdx.files.internal("arial.fnt"),
         Gdx.files.internal("arial.png"), false);
+        music = Gdx.audio.newMusic(Gdx.files.internal("Meloetta's song.mp3"));
+        music.play();
         resetGame();
     }
 
@@ -102,6 +106,12 @@ public class MegaJumper extends ApplicationAdapter {
             jumper.getVelocity().x += jumper.getAccel();
             jumper.getPosition().mulAdd(jumper.getVelocity(), deltaTime);
 
+            if (jumper.getPosition().x>width) {
+                jumper.setPosition(0 - jumper.getBounds().getWidth(),jumper.getPosition().y);
+            }
+            if (jumper.getPosition().x<0 - jumper.getBounds().getWidth()) {
+                jumper.setPosition(width,jumper.getPosition().y);
+            }
             //platform logic
             float lowestPlatform = platforms.get(0).getPosition().y;
             for (int i = 0; i < NUM_OF_PLATFORMS; i++) {
